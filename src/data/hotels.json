@@ -1,0 +1,94 @@
+[
+  {
+    "id": 1,
+    "name": "The Palace",
+    "price": 14000,
+    "rooms": ["A1", "A2", "A3", "A4"],
+    "addOns": [
+      {
+        "id": 1,
+        "name": "Wifi",
+        "price": 300
+      },
+      {
+        "id": 2,
+        "name": "Room service",
+        "price": 1000
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "name": "The Grand Sultan",
+    "price": 12000,
+    "rooms": ["A1", "A2", "A3", "A4"],
+    "addOns": [
+      {
+        "id": 1,
+        "name": "Breakfast",
+        "price": 1000
+      },
+      {
+        "id": 2,
+        "name": "Lunch",
+        "price": 2000
+      },
+      {
+        "id": 3,
+        "name": "Room service",
+        "price": 1000
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "name": "Peninsula",
+    "price": 10000,
+    "rooms": ["A1", "A2", "A3", "A4"],
+    "addOns": [
+      {
+        "id": 1,
+        "name": "Breakfast",
+        "price": 1000
+      },
+      {
+        "id": 2,
+        "name": "Lunch",
+        "price": 2000
+      },
+      {
+        "id": 3,
+        "name": "Dinner",
+        "price": 2500
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "name": "Radisson",
+    "price": 15000,
+    "rooms": ["A1", "A2", "A3", "A4"],
+    "addOns": [
+      {
+        "id": 1,
+        "name": "Breakfast",
+        "price": 1000
+      },
+      {
+        "id": 2,
+        "name": "Lunch",
+        "price": 2000
+      },
+      {
+        "id": 3,
+        "name": "Dinner",
+        "price": 2500
+      },
+      {
+        "id": 4,
+        "name": "Parking",
+        "price": 1500
+      }
+    ]
+  }
+]
