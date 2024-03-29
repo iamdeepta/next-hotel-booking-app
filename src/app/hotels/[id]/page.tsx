@@ -1,10 +1,13 @@
 "use client";
 
+import { CheckoutBody } from "@/app/checkout-sessions/route";
 import { IHotelData } from "@/app/page";
 import MyBookingCalendar from "@/components/MyBookingCalendar";
 import HotelData from "@/data/hotels.json";
 import { Selected } from "@demark-pro/react-booking-calendar";
+import { loadStripe } from "@stripe/stripe-js";
 import { useEffect, useState } from "react";
+import Stripe from "stripe";
 
 const Page = ({ params }: { params: { id: number } }) => {
   const [hotelData, setHotelData] = useState<IHotelData | null>();
@@ -43,7 +46,7 @@ const Page = ({ params }: { params: { id: number } }) => {
     setOpenModal(true);
   };
 
-  const submit = () => {
+  const submit = async () => {
     try {
       if (name.trim() === "") {
         alert("Please enter your name");
@@ -79,6 +82,57 @@ const Page = ({ params }: { params: { id: number } }) => {
       //   console.log(JSON.parse(localStorage?.getItem("currentItem") as string));
       localStorage.setItem("items", JSON.stringify(items));
 
+      //map addOns
+      let addOnItems = addOns?.map((addOn: { name: string; price: number }) => {
+        return {
+          price_data: {
+            currency: "bdt",
+            unit_amount:
+              addOn?.price > 0 ? addOn?.price * selectedDates?.length * 100 : 0,
+            product_data: {
+              name: addOn?.name,
+              description: `Add On: ${addOn?.name} (${selectedDates?.length} days)`,
+            },
+          },
+          quantity: 1,
+        };
+      });
+
+      const STRIPE_PK = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!;
+      const stripe = await loadStripe(STRIPE_PK);
+
+      const body: CheckoutBody = {
+        line_items: [
+          ...addOnItems,
+          {
+            price_data: {
+              currency: "bdt",
+              unit_amount: hotelData?.price
+                ? hotelData?.price * selectedDates?.length * 100
+                : 0,
+              product_data: {
+                name: hotelData?.name + " Room",
+                description: `Room: ${room} - ${selectedDates?.length} days`,
+              },
+            },
+            quantity: 1,
+          },
+        ],
+      };
+
+      const result = await fetch("/checkout-sessions", {
+        method: "post",
+        body: JSON.stringify(body, null),
+        headers: {
+          "content-type": "application/json",
+        },
+      });
+
+      // step 4: get the data and redirect to checkout using the sessionId
+      const data = (await result.json()) as Stripe.Checkout.Session;
+      const sessionId = data.id!;
+      stripe?.redirectToCheckout({ sessionId });
+
       setSelectedDates([]);
       setRoom("");
       setAddOns([]);
@@ -87,6 +141,7 @@ const Page = ({ params }: { params: { id: number } }) => {
       setOpenModal(false);
     } catch (error) {
       console.log(error);
+      setLoading(false);
     }
   };
 
